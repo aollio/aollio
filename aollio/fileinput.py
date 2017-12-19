@@ -76,7 +76,7 @@ import sys, os
 
 __all__ = ["input", "close", "nextfile", "filename", "lineno", "filelineno",
            "fileno", "isfirstline", "isstdin", "FileInput", "hook_compressed",
-           "hook_encoded"]
+           ]
 
 _state = None
 
@@ -341,7 +341,7 @@ class FileInput:
         else:
             if self._inplace:
                 self._backupfilename = (
-                    self._filename + (self._backup or ".bak"))
+                        self._filename + (self._backup or ".bak"))
                 try:
                     os.unlink(self._backupfilename)
                 except OSError:

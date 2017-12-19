@@ -6,6 +6,9 @@ import requests
 from scrapy.http import TextResponse
 from werkzeug.local import LocalProxy
 
+__author__ = 'Aollio Hou'
+__email__ = 'aollio@outlook.com'
+
 _res = [None]
 response = LocalProxy(lambda: _res[-1])
 
