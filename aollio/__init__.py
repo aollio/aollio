@@ -5,7 +5,6 @@ __email__ = 'aollio@outlook.com'
 
 from aollio.fileinput import FileInput
 from aollio.fileinput import input
-
-
-def hello():
-    print('Hello, This is Aollio Python module')
+import aollio.crawl as crawl
+import aollio.fileinput as fileinput
+from aollio.hello import hello
