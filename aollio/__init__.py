@@ -3,8 +3,7 @@
 __author__ = 'Aollio Hou'
 __email__ = 'aollio@outlook.com'
 
-from aollio.fileinput import FileInput
-from aollio.fileinput import input
-import aollio.crawl as crawl
-import aollio.fileinput as fileinput
-from aollio.hello import hello
+from . import fileinput, fileutil, crawl
+from fileinput import FileInput
+from fileinput import input
+from .hello import hello
