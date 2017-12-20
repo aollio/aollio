@@ -5,8 +5,9 @@ import os
 
 import requests
 from scrapy.http import TextResponse
-from .fileutil import write_file
 from werkzeug.local import LocalProxy
+
+from .fileutil import write_file
 
 __author__ = 'Aollio Hou'
 __email__ = 'aollio@outlook.com'
@@ -28,9 +29,9 @@ USER_AGENTS = [
 _DEFAULT_ENCODING = 'utf-8'
 
 
-def fetch(url):
+def fetch(url, *args, **kwargs):
     """fetch url. Update response"""
-    resp = requests.get(url)
+    resp = requests.get(url, *args, **kwargs)
     resp.encoding = _DEFAULT_ENCODING
     fetch_from_response(resp)
 
