@@ -2,8 +2,9 @@
 Using scrapy shell methods in Jupyter notebook.
 """
 import os
-
+from random import choice
 import requests
+from os import path
 from scrapy.http import TextResponse
 from werkzeug.local import LocalProxy
 
@@ -12,35 +13,29 @@ from .fileutil import write_file
 __author__ = 'Aollio Hou'
 __email__ = 'aollio@outlook.com'
 
+_here = path.abspath(path.dirname(__file__))
+
 _resp = [None]
 response = LocalProxy(lambda: _resp[0])
 
-USER_AGENTS = [
-    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
-    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)',
-    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)',
-    'Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)',
-    'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)',
-    'Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))',
-    'Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)',
-    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)',
-    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; ']
-
-_DEFAULT_ENCODING = 'utf-8'
+user_agents = [line for line in open(path.join(_here, 'user_agents.txt'), 'r').read().split('\n')]
+user_agent = LocalProxy(lambda: choice(user_agents))
 
 
-def fetch(url, *args, **kwargs):
-    """fetch url. Update response"""
-    resp = requests.get(url, *args, **kwargs)
-    resp.encoding = _DEFAULT_ENCODING
-    fetch_from_response(resp)
+def fetch(url, meta=None, *args, **kwargs):
+    """fetch url. """
+    resp = requests.get(url, *args, **kwargs, timeout=30)
+    resp.encoding = 'UTF-8'
+    rv = TextResponse(resp.url, status=resp.status_code, body=resp.text,
+                      encoding='UTF-8')
+    rv.request = rv.follow(url, meta=meta)
+    _set_response(resp)
 
 
-def fetch_from_response(res):
+def _set_response(res):
     """Update local response from requests response"""
-    resp = TextResponse(res.url, body=res.text, encoding=_DEFAULT_ENCODING)
-    global _resp
-    _resp[0] = resp
+    global _res
+    _resp[0] = res
 
 
 def _platform():
