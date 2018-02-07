@@ -4,6 +4,7 @@ Using scrapy shell methods in Jupyter notebook.
 import os
 from random import choice
 import requests
+import hashlib
 from os import path
 from scrapy.http import TextResponse
 from werkzeug.local import LocalProxy
@@ -29,7 +30,8 @@ def fetch(url, meta=None, *args, **kwargs):
     rv = TextResponse(resp.url, status=resp.status_code, body=resp.text,
                       encoding='UTF-8')
     rv.request = rv.follow(url, meta=meta)
-    _set_response(resp)
+    _set_response(rv)
+    return rv
 
 
 def _set_response(res):
@@ -55,7 +57,9 @@ def _get_var_path():
 def view(resp=None):
     if not resp:
         resp = response
-    path = _get_var_path() + resp.url.replace('/', '') + '.html'
+    md5 = hashlib.md5()
+    md5.update(resp.url.encode())
+    path = _get_var_path() + md5.hexdigest() + '.html'
     write_file(path, resp.text.encode(), bytes_mode=True)
     os.system('open %s' % path)
 
